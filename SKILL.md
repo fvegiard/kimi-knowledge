@@ -35,15 +35,35 @@ Agent Swarm — a single page like these is a single-agent job.
 
 ## Templates in this repo
 
-| Template | Path | What it gives you |
-|---|---|---|
-| Gravitational-lensing background | `templates/gravity-lens/index.html` | Dependency-free WebGL2 fullscreen shader: raymarched light-bending around a compact mass, procedural starfield, an accretion-disk band, drag-to-orbit + scroll-to-zoom. Swap `DISK_INNER/OUTER`, the hot-color mix, and the pull constant to restyle. This is the base for a GARGANTUA-style hero background. |
-| Dark data-terminal dashboard | `templates/data-terminal/index.html` | Vanilla JS/CSS dashboard: seeded-PRNG heatmap grid, sortable ticker table, canvas sparkline, live clock. Deterministic demo data (`mulberry32` seed) so screenshots are reproducible. Swap `SYMS` and the seed for a different dataset; **always label demo data as demo data**, the way Kimi's own dashboard does ("ALL HEADLINES ARE ILLUSTRATIVE FIXTURES"). |
+**`templates/real-captured/` is the primary asset — start here.** These are not
+hand-rolled approximations: they are the actual client-side source of Kimi's three
+showcase demo pages, captured via DevTools/network inspection of the live pages
+(HTML/CSS/JS/shaders/vendor libs/fonts fetched over HTTP, not rewritten from a
+description), each verified to render pixel-close to the original by serving it
+locally and screenshotting it. Full attribution and per-file provenance:
+`templates/real-captured/ATTRIBUTION.md`; verification screenshots in
+`templates/real-captured/_verification/`.
 
-No template is shipped for the 3D mechanical typewriter — that needs real 3D
-geometry/lighting (three.js + GLTF or similar), which is a bigger, bespoke job each
-time rather than a reusable skeleton. Build it fresh with the `modern-web-guidance`
-skill's Three.js guidance if asked, and verify it the same way (see below).
+| Real capture | Path | Stack |
+|---|---|---|
+| GARGANTUA black-hole raytracer | `templates/real-captured/gargantua-raytracer/` | three.js ES modules (core + OrbitControls, full postprocessing chain) + custom GLSL (`js/shaders.js`, `js/main.js`) |
+| GMT terminal dashboard | `templates/real-captured/gmt-terminal/` | Vanilla JS, 12-file modular dashboard (data/fixtures, adapters, sessions, charts, widgets, layout, inspector...) |
+| Impact 3D typewriter | `templates/real-captured/impact-typewriter/` | Vite SPA bundle (React + three.js), minified, with its real fonts |
+
+To adapt one: copy the whole directory, change data/labels/colors in the app's own
+JS (not the vendored three.js/library files), re-verify per "Verification" below.
+These supersede the two older hand-authored templates below for these three specific
+demos — those remain useful as generic *starting-from-scratch* skeletons when no real
+capture exists for what's being asked.
+
+| Hand-authored starting skeleton | Path | What it gives you |
+|---|---|---|
+| Gravitational-lensing background | `templates/gravity-lens/index.html` | Dependency-free WebGL2 fullscreen shader: raymarched light-bending around a compact mass, procedural starfield, an accretion-disk band, drag-to-orbit + scroll-to-zoom. Swap `DISK_INNER/OUTER`, the hot-color mix, and the pull constant to restyle. |
+| Dark data-terminal dashboard | `templates/data-terminal/index.html` | Vanilla JS/CSS dashboard: seeded-PRNG heatmap grid, sortable ticker table, canvas sparkline, live clock. Deterministic demo data (`mulberry32` seed) so screenshots are reproducible. Swap `SYMS` and the seed for a different dataset; **always label demo data as demo data**. |
+
+For anything that isn't one of these three captured demos, build fresh with the
+`modern-web-guidance` skill's Three.js guidance if asked, and verify it the same way
+(see below) — never present a hand-rolled guess as if it were extracted source.
 
 ## Conceptual/method diagrams
 

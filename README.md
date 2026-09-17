@@ -5,7 +5,13 @@ Verbatim mirror of the official **Kimi help center** (https://www.kimi.com/help 
 - `corpus/en/` — 139 English pages · `corpus/zh/` — 142 Chinese pages (full text, frontmatter = source URL, fetch date, SHA256 of original HTML)
 - `CAPABILITIES.md` — every Kimi capability with limits and `file:line` evidence
 - `corpus/examples/` — notes on Kimi Agent demo pages + a captured diagram-prompt recipe
-- `templates/` — screenshot-verified, working single-file HTML starting points (WebGL gravity-lens background, dark data-terminal dashboard) for rebuilding that kind of page fast
+- `templates/` — working page sources for rebuilding Kimi-style demos fast.
+  `templates/real-captured/` is the **real** client-side source of Kimi's own
+  GARGANTUA raytracer, GMT terminal dashboard, and Impact typewriter demos,
+  captured via DevTools/network inspection of the live pages (not hand-rolled),
+  each verified pixel-close by local serving + screenshot — see
+  `templates/real-captured/ATTRIBUTION.md`. `templates/gravity-lens/` and
+  `templates/data-terminal/` are older hand-authored generic starting skeletons.
 - `SKILL.md` — the workflow that ties it together: which template to start from, how to adapt it, how to verify it visually before shipping
 - `MANIFEST.sha256` — integrity of every corpus file
 
