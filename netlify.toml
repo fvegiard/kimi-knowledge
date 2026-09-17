@@ -2,7 +2,7 @@
   publish = "public"
 
 [functions."kimi-docs-mcp"]
-  included_files = ["corpus/**"]
+  included_files = ["corpus/**", "templates/**", "SKILL.md"]
 
 [dev]
   publish = "public"
