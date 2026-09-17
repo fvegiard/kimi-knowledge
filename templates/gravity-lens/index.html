@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Gravity Lens — reusable WebGL2 black-hole background</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:ui-monospace,monospace}
+  canvas{display:block;width:100vw;height:100vh}
+  #hud{position:fixed;left:16px;bottom:14px;color:#ffb37a;font-size:11px;letter-spacing:.08em;
+       text-transform:uppercase;opacity:.75;pointer-events:none;text-shadow:0 0 6px #000}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="hud">drag to orbit &middot; scroll to zoom &middot; template: gravity-lens</div>
+<script>
+// Single-file, dependency-free WebGL2 template.
+// Approximate gravitational lensing: each raymarch step bends the ray
+// direction toward the mass by a 1/r^2 pull (a cheap stand-in for full
+// geodesic integration, not physically exact, but visually reads as
+// light bending around a compact object). Reuse by swapping the
+// fragment shader's DISK_* constants and starfield hash.
+
+const canvas = document.getElementById('c');
+const gl = canvas.getContext('webgl2', {antialias:true});
+if(!gl){ document.body.innerHTML = '<p style="color:#fff;font-family:sans-serif;padding:40px">WebGL2 not available in this browser.</p>'; throw new Error('no webgl2'); }
+
+function resize(){
+  const dpr = Math.min(devicePixelRatio||1, 2);
+  canvas.width = innerWidth*dpr; canvas.height = innerHeight*dpr;
+  gl.viewport(0,0,canvas.width,canvas.height);
+}
+addEventListener('resize', resize); resize();
+
+const vsSrc = `#version 300 es
+in vec2 aPos;
+void main(){ gl_Position = vec4(aPos,0.0,1.0); }`;
+
+const fsSrc = `#version 300 es
+precision highp float;
+out vec4 fragColor;
+uniform vec2 uRes;
+uniform float uTime;
+uniform vec2 uOrbit;   // yaw, pitch (radians)
+uniform float uDist;   // camera distance in Rs units
+
+#define RS 1.0
+#define STEPS 110
+#define STEP_LEN 0.14
+#define DISK_INNER 2.6
+#define DISK_OUTER 8.0
+
+float hash(vec3 p){
+  p = fract(p*0.3183099+vec3(0.1,0.2,0.3));
+  p *= 17.0;
+  return fract(p.x*p.y*p.z*(p.x+p.y+p.z));
+}
+
+// Procedural starfield from a ray direction.
+vec3 stars(vec3 d){
+  vec3 p = d*400.0;
+  vec3 c = vec3(0.0);
+  float h = hash(floor(p));
+  if(h > 0.9935){
+    float b = smoothstep(0.9935, 1.0, h);
+    c = vec3(0.75,0.82,1.0) * b * 1.4;
+  }
+  // faint nebula tint from low-freq hash
+  float neb = hash(floor(d*3.0));
+  c += vec3(0.05,0.03,0.08) * neb;
+  return c;
+}
+
+mat3 rotY(float a){ float s=sin(a),c=cos(a); return mat3(c,0,s, 0,1,0, -s,0,c); }
+mat3 rotX(float a){ float s=sin(a),c=cos(a); return mat3(1,0,0, 0,c,-s, 0,s,c); }
+
+void main(){
+  vec2 uv = (gl_FragCoord.xy - 0.5*uRes) / uRes.y;
+
+  mat3 cam = rotY(uOrbit.x) * rotX(uOrbit.y);
+  vec3 ro = cam * vec3(0.0, 0.0, -uDist);
+  vec3 rd = normalize(cam * vec3(uv, 1.3));
+
+  vec3 pos = ro;
+  vec3 dir = rd;
+  vec3 col = vec3(0.0);
+  float alpha = 1.0;
+  bool hitDisk = false;
+  bool hitHole = false;
+
+  for(int i=0; i<STEPS; i++){
+    float r = length(pos);
+    if(r < RS*0.98){ hitHole = true; break; }
+
+    // cheap light-bending: pull the direction toward the origin,
+    // stronger at small r (approximates gravitational deflection).
+    vec3 toCenter = -pos;
+    float pull = RS*RS*0.85 / max(r*r*r, 0.05);
+    dir = normalize(dir + toCenter * pull * STEP_LEN);
+
+    vec3 next = pos + dir*STEP_LEN;
+
+    // thin accretion disk in the XZ plane
+    if(!hitDisk && pos.y*next.y < 0.0){
+      float t = pos.y/(pos.y-next.y);
+      vec3 hp = mix(pos,next,t);
+      float rad = length(hp.xz);
+      if(rad > DISK_INNER && rad < DISK_OUTER){
+        float band = smoothstep(DISK_INNER,DISK_INNER+0.6,rad) * smoothstep(DISK_OUTER,DISK_OUTER-2.5,rad);
+        float ang = atan(hp.z, hp.x);
+        float swirl = 0.55 + 0.45*sin(ang*3.0 - uTime*0.6 - rad*1.3);
+        float doppler = 0.6 + 0.4*sin(ang - uTime*0.6); // fake relativistic beaming
+        vec3 hot = mix(vec3(1.0,0.35,0.05), vec3(1.0,0.85,0.55), doppler);
+        col += hot * band * swirl * 1.35;
+        hitDisk = true;
+      }
+    }
+    pos = next;
+  }
+
+  if(!hitHole){
+    col += stars(dir) * (hitDisk ? 0.35 : 1.0);
+  }
+
+  // subtle photon-ring glow near the shadow edge
+  float edge = smoothstep(0.0, 0.9, 1.0 - length(uv)*1.7);
+  col += vec3(1.0,0.6,0.25) * pow(edge,7.0) * 0.4;
+
+  col = col / (1.0+col); // simple tonemap
+  fragColor = vec4(col, 1.0);
+}`;
+
+function compile(type, src){
+  const s = gl.createShader(type);
+  gl.shaderSource(s, src); gl.compileShader(s);
+  if(!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s));
+  return s;
+}
+const prog = gl.createProgram();
+gl.attachShader(prog, compile(gl.VERTEX_SHADER, vsSrc));
+gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, fsSrc));
+gl.linkProgram(prog);
+if(!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(prog));
+gl.useProgram(prog);
+
+const quad = new Float32Array([-1,-1, 1,-1, -1,1, 1,1]);
+const buf = gl.createBuffer();
+gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+gl.bufferData(gl.ARRAY_BUFFER, quad, gl.STATIC_DRAW);
+const aPos = gl.getAttribLocation(prog,'aPos');
+gl.enableVertexAttribArray(aPos);
+gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+
+const uRes = gl.getUniformLocation(prog,'uRes');
+const uTime = gl.getUniformLocation(prog,'uTime');
+const uOrbit = gl.getUniformLocation(prog,'uOrbit');
+const uDist = gl.getUniformLocation(prog,'uDist');
+
+let orbit = [0.4, 0.42];
+let dist = 15.0;
+let dragging = false, lastX=0, lastY=0;
+canvas.addEventListener('pointerdown', e=>{dragging=true; lastX=e.clientX; lastY=e.clientY;});
+addEventListener('pointerup', ()=>dragging=false);
+addEventListener('pointermove', e=>{
+  if(!dragging) return;
+  orbit[0] += (e.clientX-lastX)*0.005;
+  orbit[1] = Math.max(-1.4, Math.min(1.4, orbit[1] + (e.clientY-lastY)*0.005));
+  lastX=e.clientX; lastY=e.clientY;
+});
+canvas.addEventListener('wheel', e=>{ dist = Math.max(3.5, Math.min(20, dist + e.deltaY*0.01)); }, {passive:true});
+
+function frame(t){
+  gl.uniform2f(uRes, canvas.width, canvas.height);
+  gl.uniform1f(uTime, t*0.001);
+  gl.uniform2f(uOrbit, orbit[0], orbit[1]);
+  gl.uniform1f(uDist, dist);
+  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
