@@ -1,0 +1,8 @@
+[build]
+  publish = "public"
+
+[functions."kimi-docs-mcp"]
+  included_files = ["corpus/**"]
+
+[dev]
+  publish = "public"

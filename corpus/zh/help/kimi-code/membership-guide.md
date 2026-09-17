@@ -1,0 +1,168 @@
+---
+title: "Kimi Code 会员权益指南 - Kimi 帮助中心"
+source: https://www.kimi.com/help/kimi-code/membership-guide
+lang: zh
+fetched: 2026-09-16
+html_sha256: a82e5a85b862d877c8226f5076562137f647df4a12921fb4303b35a151edbbd6
+---
+
+[帮助中心](/help) › [Kimi Code](/help/kimi-code) › [Kimi Code 会员权益指南](/help/kimi-code/membership-guide)
+
+# Kimi Code 概览
+
+## Kimi Code 是什么
+
+Kimi Code 是 [Kimi 会员权益](/membership/pricing)中面向编程场景的智能编程服务。
+
+你可以把它理解为一个 AI 编程助手：它可以在开发工具中帮你阅读代码、修改文件、执行命令，并协助完成开发任务。
+
+![Kimi Code 使用方式示意](https://statics.kimi.ai/kimi-helpcenter-doc/zh-CN/kimi-code/images/membership-guide/membership-guide-01.54f435ecacf5.png)
+
+Kimi Code 主要有三种使用方式：
+
+1.  通过 Kimi Code CLI，在终端中使用；
+2.  通过 Kimi Code for VS Code，在 VS Code 编辑器中使用；
+3.  订阅用户可通过 API Key，接入 Claude Code、Roo Code、OpenCode 等第三方开发工具。 备注：CLI（Command-Line Interface，命令行界面）
+
+## 核心优势
+
+- **底层模型持续升级**：紧跟 Kimi 最新旗舰模型，持续获得前沿代码理解、推理与生成能力
+- **普通版 / 高速版双档**：同一模型提供两档速度，高速版输出速度约为普通版的 5–6 倍，可按需切换
+- **广泛兼容**：完美适配 Kimi Code CLI、VS Code、Claude Code 等各类开发工具
+- **极速响应**：最高输出速度可达 100 Tokens/s
+- **高频并发**：每 5 小时支持约 300–1200 次请求，最高并发 30
+
+## 开始使用
+
+Kimi Code 支持会员在官方客户端和第三方平台使用权益，覆盖不同的开发场景。
+
+### 使用官方客户端
+
+选择适合你的客户端，一键安装：
+
+#### 方式一：Kimi Code CLI
+
+Kimi Code CLI 是一个运行在终端中的 AI Agent，帮助你完成软件开发任务和终端操作。它可以阅读和编辑代码、执行 Shell 命令、搜索和抓取网页，并在执行过程中自主规划和调整行动。
+
+终端可以理解为：一个通过输入文字命令来操作电脑的窗口。
+
+安装后，你可以在终端里和 AI 对话，让它帮你：
+
+- 阅读代码
+- 修改文件
+- 执行命令
+- 搜索网页
+- 辅助完成开发任务 适合习惯终端操作的开发者。在终端中与 AI 对话，让它阅读代码、编辑文件、执行命令、搜索网页，自主完成开发任务。
+
+如果你使用的是 macOS / Linux，请在终端中复制并运行：
+
+Bash
+
+
+如果你使用的是 Windows，请打开 PowerShell，复制并运行：
+
+Powershell
+
+
+安装完成后，在终端中运行 `kimi` 即可启动。
+
+#### 方式二：Kimi Code for VS Code
+
+![Kimi Code for VS Code 示意](https://statics.kimi.ai/kimi-helpcenter-doc/zh-CN/kimi-code/images/membership-guide/membership-guide-02.d0b98da94118.png)
+
+适合偏好使用 VS Code 编辑器的开发者。在编辑器侧边栏与 AI 协同，支持代码补全、文件编辑、网页搜索和自动化任务。
+
+在 VS Code 扩展市场搜索 "Kimi Code" 安装，或访问 [Visual Studio Marketplace](vscode:extension/moonshot-ai.kimi-code)。
+
+> 若安装后未显示扩展，请重启 VS Code 或在命令面板中执行 "Developer: Reload Window" (Mac: Cmd+Shift+P, Windows/Linux: Ctrl+Shift+P)。
+
+其他编辑器如 JetBrains、Zed 可通过 CLI 的 ACP 协议接入使用。
+
+### 方式三：第三方工具接入
+
+![第三方工具接入示意](https://statics.kimi.ai/kimi-helpcenter-doc/zh-CN/kimi-code/images/membership-guide/membership-guide-03.d15a059f13a6.png)
+
+安装官方客户端或接入第三方工具后，需要完成认证才能使用 Kimi Code 额度。
+
+#### OAuth 自动认证（官方客户端）
+
+使用 Kimi Code CLI 或 VS Code 扩展的用户，可通过 OAuth 授权自动接入，无需手动管理 API Key。
+
+**Kimi Code**：通过 `/login` 命令自动登入 Kimi Code 平台，即完成接入
+
+**Kimi Code for VS Code 插件**：安装后通过侧边栏登录按钮完成接入
+
+#### API Key（第三方工具 / 自建应用）
+
+Kimi Code 权益支持在主流 Coding Agent 中使用——例如 Claude Code、Roo Code、OpenCode 等；也可以配合 OpenClaw、Hermes 等通用 Agent 框架。让你在自己习惯的工具里自由调用 Kimi 的 AI 能力。
+
+如果你要将 Kimi Code 接入第三方开发工具，需要手动配置 API Key。
+
+#### 服务地址
+
+Kimi Code API 同时兼容 OpenAI 和 Anthropic 两种协议，按需选择对应的 Base URL：
+
+| 协议           | Base URL                         |
+|----------------|----------------------------------|
+| OpenAI 兼容    | `https://api.kimi.com/coding/v1` |
+| Anthropic 兼容 | `https://api.kimi.com/coding/`   |
+
+#### 获取 API Key
+
+Kimi 会员可在 [Kimi Code 控制台](/code/console) 创建和管理（最多 5 个，仅创建时显示一次，请妥善保存）。
+
+#### 模型 ID
+
+在第三方工具中调用 Kimi Code API 时，请统一使用模型 ID `kimi-for-coding`。无论是 OpenAI 兼容协议还是 Anthropic 兼容协议，请求体里的 `model` 字段都填这个值。
+
+> **说明**：`kimi-for-coding` 是固定的模型 ID，后端会根据最新发布的模型自动更新其对应的 display name，你无需变更客户端配置即可享受模型升级。
+
+#### 配置到第三方工具
+
+获取 API Key 后，将对应 Base URL 和 API Key 配置到对应工具的环境变量即可使用。配置详情见 [在第三方 Coding Agent 中使用](/help/kimi-code/third-party-agents)。
+
+> **注意**：使用时请保持工具的真实身份标识，篡改客户端标识（User-Agent）将被视为违规，可能导致会员权益暂停。
+
+## 如何切换模型
+
+**高速版模型现已上线。** Kimi Code 提供**普通版**与**高速版**两档，两者基于同一模型、编码能力完全一致，共用同一个 Base URL、API Key 与会员权益；高速版**输出速度约为普通版的 5–6 倍**，适合追求即时响应、快速迭代的场景，一键切换即可。两档主要区别如下：
+
+| 对比项   | 普通版                  | 高速版                                              |
+|----------|-------------------------|-----------------------------------------------------|
+| 模型 ID  | `kimi-for-coding`       | `kimi-for-coding-highspeed`                         |
+| 输出速度 | 基准速度                | 约为普通版的 5–6 倍                                 |
+| 额度消耗 | 基准                    | 约为普通版的 3 倍                                   |
+| 编码能力 | 完整能力                | 与普通版一致                                        |
+| 适用场景 | 日常编码任务            | 即时响应、快速迭代                                  |
+| 会员要求 | 所有 Kimi Code 会员可用 | 需 [Allegretto](/membership/pricing) 及以上档位会员 |
+
+切换到目标模型的方式：
+
+- **官方 Kimi Code CLI**：在会话中输入 `/model`，直接在普通版与高速版之间切换，无需修改配置。
+- **Kimi Code for VS Code**：在输入栏下拉菜单中选择目标模型；若高速版尚未出现，重启 VS Code 或重新安装插件即可。
+- **第三方工具**：把工具里的 Model ID 配置为目标模型即可，其余配置不变，具体位置见 [在第三方 Coding Agent 中使用](/help/kimi-code/third-party-agents)。
+
+- **模型 ID 固定**：两个 ID 均为固定标识，后端随模型升级自动更新，无需改动客户端配置。
+- **务必填对**：高速版 ID 必须为 `kimi-for-coding-highspeed`；若填错或写成其他值，请求会由普通版兜底承接——不报错，但也不会加速。
+- **权限不足报 401**：无高速版权限时调用会返回 `401`，需升级至 Allegretto 及以上档位会员。
+
+**为什么整体耗时没感觉快 5–6 倍？** 「5–6 倍」指的是**模型输出速度**（生成文字 / 代码的速度）。一次编码任务的总耗时由「模型输出 + 工具调用（读写文件、执行命令、联网检索等）+ 脚本执行」共同构成——工具调用与脚本执行的耗时取决于你的项目和命令本身，高速版并不改变这部分。若整体感觉未达 5–6 倍，通常是这一轮工具调用 / 脚本执行占了较大比重，而非模型生成变慢。
+
+## 平台对比
+
+Kimi Code 会员权益专为编程场景设计。如需在自己的产品中调用大模型能力，或需要团队协作与用量管理，请访问 [Kimi 开放平台](https://platform.kimi.com/)。
+
+[TABLE]
+
+## 下一步
+
+- [Kimi Code CLI 快速开始](/help/kimi-code/cli-getting-started) – 安装、登录、第一次对话
+- [Kimi Code for VS Code 快速开始](/help/kimi-code/vscode-getting-started) – 安装扩展、登录、典型工作流
+- [在更多第三方工具中使用](/help/kimi-code/third-party-agents) – Claude Code、Roo Code 等
+- [常见问题](/help/kimi-code/faq) – 安装、登录、使用中的常见问题
+
+本文是否对你有帮助
+
+
+
+[ › 上一篇准备工作](/help/kimi-code/preparation)[下一篇 › 常见使用案例](/help/kimi-code/cli-use-cases)

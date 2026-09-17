@@ -1,0 +1,71 @@
+---
+title: "Kimi 开放平台商务合作与企业方案 - Kimi 帮助中心"
+source: https://www.kimi.com/help/kimi-api/api-business-cooperation
+lang: zh
+fetched: 2026-09-16
+html_sha256: b7c6cacf102fc168ea1555d2e3a4b62294834b8cf120eda2059fafa4b7462353
+---
+
+[帮助中心](/help) › [Kimi API与企业合作](/help/kimi-api) › [商务合作与联系销售](/help/kimi-api/api-business-cooperation)
+
+# 商务合作与联系销售
+
+Kimi 开放平台为企业客户提供多种合作方案，满足不同规模和场景的业务需求。
+
+## 是否有针对企业客户的专属产品和服务？
+
+### Kimi API 企业服务
+
+Kimi 销售团队可为企业调用 Kimi API 提供更多资源与支持，请前往 [https://platform.kimi.com/contact-sales](https://platform.kimi.com/contact-sales) 填写表单联系销售。
+
+### Kimi Business 企业会员
+
+Kimi 智能助手现已推出 Kimi Business 企业会员权益，请前往 [https://www.kimi.com/membership/pricing](/membership/pricing) 线上下单。
+
+## 如何联系销售团队？
+
+请访问 [platform.kimi.com/contact-sales](https://platform.kimi.com/contact-sales) 填写联系表单，我们的销售团队将在 1-2 个工作日内与你取得联系。
+
+你也可以在表单中注明以下信息，以便我们更快响应：
+
+- 公司名称和行业
+- 预计用量规模
+- 主要应用场景
+- 期望的合作方式
+
+## 算法备案相关
+
+Kimi 大模型已完成国内算法备案。如需查阅备案信息或获取备案相关材料以满足合规要求，请联系销售团队获取。
+
+## 合同签署
+
+企业认证用户可与 Moonshot 签署正式服务合同：
+
+- 支持标准服务协议和定制合同。
+- 合同签署后可享受对公转账充值和企业级 SLA。
+- 具体流程请联系销售团队沟通。
+
+## 企业折扣
+
+大用量企业客户可申请专属折扣：
+
+- 折扣力度与承诺用量和合作期限相关。
+- 需完成企业认证并签署合同。
+- 请通过销售团队申请，提供预估月用量。
+
+## 企业级 API 服务
+
+企业级 API 服务在标准 API 基础上提供：
+
+- 更高的速率限制和并发配额
+- 专属技术支持通道
+- 定制化 SLA 保障
+- 优先体验新功能
+
+如需了解详情，请访问 [platform.kimi.com/contact-sales](https://platform.kimi.com/contact-sales) 联系销售团队。
+
+本文是否对你有帮助
+
+
+
+[ › 上一篇模型能力](/help/kimi-api/api-model-capabilities)[下一篇 › 数据处理与安全](/help/kimi-api/api-data-security)

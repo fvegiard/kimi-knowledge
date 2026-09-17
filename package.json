@@ -1,0 +1,13 @@
+{
+  "name": "kimi-docs-mcp",
+  "version": "1.0.0",
+  "description": "Verbatim mirror of the official Kimi help center served as a stateless MCP server on Netlify (based on netlify/examples serverless-mcp)",
+  "type": "module",
+  "license": "ISC",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.10.2",
+    "@netlify/functions": "^2.5.1",
+    "fetch-to-node": "^2.0.0",
+    "zod": "^3.24.3"
+  }
+}

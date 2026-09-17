@@ -1,0 +1,54 @@
+---
+title: "Kimi 开放平台充值与开票指南 - Kimi 帮助中心"
+source: https://www.kimi.com/help/kimi-api/api-billing-and-finance
+lang: zh
+fetched: 2026-09-16
+html_sha256: 974a06b428a591b574c906f1e9e6e1ea9dc5473396e28b8f8c493a2d5fb35295
+---
+
+[帮助中心](/help) › [Kimi API与企业合作](/help/kimi-api) › [充值与开票](/help/kimi-api/api-billing-and-finance)
+
+# 充值与开票
+
+以下是 Kimi 开放平台计费与财务相关的常见问题。
+
+## 收费标准是怎样的？
+
+Kimi API 按 token 消耗量计费，输入 token 和输出 token 分开计价。不同模型价格不同，联网搜索每次额外收费 ¥0.03。详细价格请参考 [Kimi API 定价](https://platform.kimi.com/docs/pricing/chat)。
+
+## 如何充值？
+
+### 个人用户充值
+
+请先完成个人认证，然后在用户充值页面进行在线充值。在线充值支持微信/支付宝扫码支付两种方式，充值成功后会按照您的累积充值金额进行用户等级调整。
+
+### 企业用户充值
+
+请先完成企业认证，企业认证通过后，您可以选择以下两种方式充值：
+
+1.  **在线充值**：支持微信/支付宝扫码支付，充值成功后立即到账，充值成功后会按照您的累积充值金额进行用户等级调整。
+2.  **银行对公汇款**：平台会为您提供专属收款账号，请使用与实名认证主体一致的银行账户进行汇款。线下对公汇款预计 1-5 个工作日到账（具体到账时间以银行的实际到账时间为准），我方银行账户到账后，转账充值金额将在 10 分钟左右自动转入您的账户，充值成功后会按照您的累积充值金额进行用户等级调整。
+
+## 充值赠券何时到账，在哪里查看？
+
+请先确认充值是否满足活动资格：参与次数、符合返赠条件的交易、发放时间和有效期均以 [活动规则页](https://platform.kimi.com/docs/pricing/promotion) 为准，并非每笔充值都会获得赠券。
+
+符合条件的赠券发放后，可以通过 [查询余额接口](https://platform.kimi.com/docs/api/balance) 查看 `voucher_balance`。超过活动页注明的发放时间仍未到账时，请携带组织 ID、充值时间、金额和支付凭证，通过 [API 问题反馈表单](https://moonshot.feishu.cn/share/base/form/shrcnR8K8KP2GF3iaBEZK0rRWbh) 联系支持。
+
+## 如何开发票？
+
+1.  登录 [Kimi 开放平台控制台](https://platform.kimi.com/)，进入「费用 → [发票管理](https://platform.kimi.com/console/invoice)」页面。
+2.  选择需要开票的充值记录，填写发票信息，提交申请。
+3.  电子发票将发送至您填写的邮箱。
+
+发票相关说明：
+
+- 平台支持按消耗金额或充值金额开具发票。
+- 个人认证可以开具个人抬头/公司抬头发票；企业认证仅开具企业认证主体抬头的发票。
+- 开票主体为北京月之暗面科技有限公司；发票项目名称为「技术服务费」，税收分类编码简称为「生产生活服务」，税率为 6%，发票票面显示为 **\*生产生活服务\*技术服务费**。
+
+本文是否对你有帮助
+
+
+
+[ › 上一篇账号与认证](/help/kimi-api/api-account-and-auth)[下一篇 › 模型能力](/help/kimi-api/api-model-capabilities)
