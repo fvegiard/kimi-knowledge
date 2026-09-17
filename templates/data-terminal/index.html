@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Data Terminal — reusable dark dashboard template</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  :root{
+    --bg:#0a0c0e; --panel:#111417; --line:#22262b; --fg:#d7dadd; --dim:#7c868f;
+    --up:#3ddc84; --down:#ff5c5c; --accent:#ff9a3d;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--fg);
+    font-family:ui-monospace,"SF Mono",Consolas,monospace;font-size:12px}
+  .wrap{display:grid;grid-template-columns:2fr 1fr;grid-template-rows:auto 1fr;gap:10px;padding:10px;height:100vh}
+  header{grid-column:1/3;display:flex;justify-content:space-between;align-items:center;
+    padding:8px 12px;border:1px solid var(--line);background:var(--panel);letter-spacing:.06em}
+  header b{color:var(--accent)}
+  #clock{color:var(--dim)}
+  .panel{border:1px solid var(--line);background:var(--panel);padding:10px;overflow:auto}
+  .panel h2{margin:0 0 8px;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--dim);font-weight:600}
+  .heatmap{display:grid;grid-template-columns:repeat(6,1fr);gap:4px}
+  .cell{padding:6px 4px;text-align:center;border-radius:2px;color:#0a0c0e;font-weight:700;cursor:default}
+  .cell small{display:block;font-weight:400;opacity:.85;font-size:9px}
+  table{width:100%;border-collapse:collapse}
+  td,th{padding:3px 6px;text-align:right;border-bottom:1px solid var(--line)}
+  th{color:var(--dim);text-align:right;font-weight:600}
+  td:first-child,th:first-child{text-align:left}
+  .up{color:var(--up)} .down{color:var(--down)}
+  .demo{position:fixed;right:10px;bottom:8px;color:var(--dim);letter-spacing:.1em;opacity:.7}
+  canvas{width:100%;height:90px;display:block}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div><b>DATA://TERMINAL</b> &middot; reusable dashboard template</div>
+    <div id="clock">--:--:--</div>
+  </header>
+
+  <div class="panel">
+    <h2>Heatmap &middot; |chg%| = size &middot; color = direction</h2>
+    <div class="heatmap" id="heatmap"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Ticker</h2>
+    <table id="tickerTable">
+      <thead><tr><th>Sym</th><th>Last</th><th>Chg%</th></tr></thead>
+      <tbody id="tickerBody"></tbody>
+    </table>
+    <h2 style="margin-top:14px">Index (60 pts, demo)</h2>
+    <canvas id="spark"></canvas>
+  </div>
+</div>
+<div class="demo">ALL VALUES ARE SEEDED DEMO DATA &middot; TEMPLATE: data-terminal</div>
+
+<script>
+// Deterministic PRNG so the "demo" data is stable across reloads/screenshots.
+function mulberry32(seed){
+  return function(){
+    seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+    let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+const rnd = mulberry32(42);
+
+const SYMS = ['NVDA','MSFT','AAPL','GOOGL','META','AVGO','AMD','TSM','ASML','ORCL','CRM','PLTR'];
+const rows = SYMS.map(sym => {
+  const chg = (rnd()*8 - 4);
+  const last = 40 + rnd()*680;
+  return {sym, last, chg};
+});
+
+const heat = document.getElementById('heatmap');
+rows.forEach(r=>{
+  const up = r.chg >= 0;
+  const mag = Math.min(Math.abs(r.chg)/4, 1);
+  const bg = up
+    ? `rgba(61,220,132,${0.25+mag*0.6})`
+    : `rgba(255,92,92,${0.25+mag*0.6})`;
+  const div = document.createElement('div');
+  div.className = 'cell';
+  div.style.background = bg;
+  div.innerHTML = `${r.sym}<small>${up?'+':''}${r.chg.toFixed(2)}%</small>`;
+  heat.appendChild(div);
+});
+
+const tbody = document.getElementById('tickerBody');
+rows.slice().sort((a,b)=>b.chg-a.chg).forEach(r=>{
+  const tr = document.createElement('tr');
+  const cls = r.chg>=0 ? 'up' : 'down';
+  tr.innerHTML = `<td>${r.sym}</td><td>${r.last.toFixed(2)}</td><td class="${cls}">${r.chg>=0?'+':''}${r.chg.toFixed(2)}%</td>`;
+  tbody.appendChild(tr);
+});
+
+// sparkline
+const cv = document.getElementById('spark');
+function drawSpark(){
+  const dpr = Math.min(devicePixelRatio||1,2);
+  cv.width = cv.clientWidth*dpr; cv.height = cv.clientHeight*dpr;
+  const ctx = cv.getContext('2d');
+  const n = 60; let v = 100; const pts=[];
+  const r2 = mulberry32(7);
+  for(let i=0;i<n;i++){ v += (r2()-0.5)*3; pts.push(v); }
+  const min = Math.min(...pts), max = Math.max(...pts);
+  ctx.clearRect(0,0,cv.width,cv.height);
+  ctx.beginPath();
+  pts.forEach((p,i)=>{
+    const x = i/(n-1)*cv.width;
+    const y = cv.height - (p-min)/(max-min||1)*cv.height*0.85 - cv.height*0.05;
+    i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+  });
+  ctx.strokeStyle = '#3ddc84'; ctx.lineWidth = 2*dpr; ctx.stroke();
+}
+drawSpark(); addEventListener('resize', drawSpark);
+
+function tick(){
+  document.getElementById('clock').textContent = new Date().toISOString().slice(11,19) + ' UTC';
+}
+tick(); setInterval(tick, 1000);
+</script>
+</body>
+</html>
