@@ -3,25 +3,28 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 
-// Corpus is bundled via netlify.toml `included_files`.
+// Corpus, templates and SKILL.md are bundled via netlify.toml `included_files`.
 const ROOT = path.resolve(process.cwd(), "corpus");
+const TEMPLATES_ROOT = path.resolve(process.cwd(), "templates");
+const SKILL_PATH = path.resolve(process.cwd(), "SKILL.md");
 const LANGS = ["en", "zh"] as const;
 
-async function walk(dir: string): Promise<string[]> {
+async function walk(dir: string, filter: (name: string) => boolean = () => true): Promise<string[]> {
   const out: string[] = [];
   for (const e of await readdir(dir, { withFileTypes: true })) {
     const p = path.join(dir, e.name);
-    if (e.isDirectory()) out.push(...(await walk(p)));
-    else if (e.name.endsWith(".md")) out.push(p);
+    if (e.isDirectory()) out.push(...(await walk(p, filter)));
+    else if (filter(e.name)) out.push(p);
   }
   return out;
 }
 
-function safe(rel: string): string {
-  const abs = path.resolve(ROOT, rel);
-  if (!abs.startsWith(ROOT + path.sep)) throw new Error("Path outside corpus");
+function safeUnder(root: string, rel: string): string {
+  const abs = path.resolve(root, rel);
+  if (!abs.startsWith(root + path.sep)) throw new Error("Path outside allowed root");
   return abs;
 }
+const safe = (rel: string) => safeUnder(ROOT, rel);
 
 const text = (t: string) => ({ content: [{ type: "text" as const, text: t }] });
 
@@ -64,6 +67,30 @@ export const setupMCPServer = (): McpServer => {
       }
       return text(hits.length ? hits.join("\n") : "No match");
     }
+  );
+
+  server.tool(
+    "read_kimi_skill",
+    "Read SKILL.md: the workflow for building Kimi-style demo pages fast, using the ready-made templates and the diagram-prompt recipe.",
+    {},
+    async () => text(await readFile(SKILL_PATH, "utf8"))
+  );
+
+  server.tool(
+    "list_templates",
+    "List every ready-made, screenshot-verified page template in this repo (WebGL backgrounds, dashboards, etc.). Each is a working single-file HTML starting point.",
+    {},
+    async () => {
+      const files = (await walk(TEMPLATES_ROOT)).map((f) => path.relative(TEMPLATES_ROOT, f)).sort();
+      return text(`${files.length} files\n` + files.join("\n"));
+    }
+  );
+
+  server.tool(
+    "read_template",
+    "Read the full source of one template file (path from list_templates, e.g. gravity-lens/index.html).",
+    { path: z.string() },
+    async ({ path: rel }) => text(await readFile(safeUnder(TEMPLATES_ROOT, rel), "utf8"))
   );
 
   return server;
