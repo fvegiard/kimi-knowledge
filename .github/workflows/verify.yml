@@ -1,0 +1,29 @@
+name: Verify corpus integrity
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  # Reusable from other repos (e.g. the private credentials repo)
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  manifest:
+    name: Check SHA256 manifest
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify MANIFEST.sha256
+        run: |
+          # Fail on tampered/missing files listed in the manifest
+          sha256sum --check --quiet MANIFEST.sha256
+
+      - name: Report manifest stats
+        if: always()
+        run: |
+          echo "Files listed in manifest: $(wc -l < MANIFEST.sha256)"
